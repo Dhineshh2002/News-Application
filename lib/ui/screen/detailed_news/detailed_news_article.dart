@@ -1,5 +1,6 @@
-import 'package:dr_news/data/model/fetching_news_viewmodel.dart';
-import 'package:dr_news/data/providers/fetching_news.dart';
+import 'package:dr_news/data/model/article_service_view_model.dart';
+import 'package:dr_news/data/model/database_service_view_model.dart';
+import 'package:dr_news/data/providers/article_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,53 +13,24 @@ class DetailedNews extends StatelessWidget {
   Widget build(BuildContext context) {
     ColorScheme color = Theme.of(context).colorScheme;
 
-    FetchNewsViewModel vm = context.watch<FetchNewsViewModel>();
+    ArticleServiceViewModel vm = context.read<ArticleServiceViewModel>();
+    SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
     List<Article>? articleList = vm.newsArticle?.articles;
 
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           controller: ScrollController(
-            initialScrollOffset: 299,
+            initialScrollOffset: 0,
             keepScrollOffset: false,
           ),
           slivers: [
             SliverAppBar(
               actions: [
-                PopupMenuButton(
-                  onSelected: onHandlePopupMenu,
-                  itemBuilder: (context) {
-                    return [
-                      const PopupMenuItem<String>(
-                        value: 'Save',
-                        child: Row(
-                          children: [
-                            Icon(Icons.save_alt_outlined),
-                            Text('Save'),
-                          ],
-                        ),
-                      ),
-                      const PopupMenuItem<String>(
-                        value: 'Share',
-                        child: Row(
-                          children: [
-                            Icon(Icons.share),
-                            Text('Share'),
-                          ],
-                        ),
-                      ),
-                      const PopupMenuItem<String>(
-                        value: 'Report',
-                        child: Row(
-                          children: [
-                            Icon(Icons.report_gmailerrorred),
-                            Text('Report'),
-                          ],
-                        ),
-                      )
-                    ];
-                  },
-                )
+                _AppBarPoppupMenu(
+                  article: article,
+                  viewModel: viewModel,
+                ),
               ],
               foregroundColor: color.primary,
               backgroundColor: Colors.blue[50],
@@ -68,17 +40,17 @@ class DetailedNews extends StatelessWidget {
                 title: Stack(
                   children: <Widget>[
                     Text(
-                      article.source?.name ?? 'DR NEWS',
+                      article.source?.name ?? article.sourceName ?? 'DR NEWS',
                       style: TextStyle(
                         fontSize: 20,
                         foreground: Paint()
                           ..style = PaintingStyle.stroke
                           ..strokeWidth = 6
-                          ..color = Colors.blue[700]!,
+                          ..color = Colors.black45,
                       ),
                     ),
                     Text(
-                      article.source?.name ?? 'DR News',
+                      article.source?.name ?? article.sourceName ?? 'DR News',
                       style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -98,92 +70,175 @@ class DetailedNews extends StatelessWidget {
                 ),
               ),
             ),
-            SliverList.list(
-              children: [
-                Text(
-                  article.title ?? '',
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 27),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  article.author != null ? 'By ${article.author}' : '',
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                ),
-                Divider(),
-                Text(
-                  article.publishedAt.toString(),
-                  style: TextStyle(fontSize: 12),
-                ),
-                Divider(),
-                Text(
-                  article.description ?? '',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Image.network(
-                  article.urlToImage ?? '',
-                  width: double.infinity,
-                  fit: BoxFit.fill,
-                  errorBuilder: (_, __, ___) => Text(''),
-                ),
-                Text(
-                  'And, even with this week’s temporary “humanitarian pause” and exchange of prisoners and hostages, the powers that be have shown no interest whatsoever in listening to the thundering calls for a permanent ceasefire that are coming from governments and mass demonstrations around the world, particularly the Biden administration here in the United States, the increasingly fascistic Netanyahu government in Israel, and the arms manufacturers and war profiteers who are raking in billions from manufacturing mass death. This is prompting activists and people of conscience around the world to take direct action themselves to try to disrupt the war machine. And that includes working people in trade unions. In Australia, for instance, direct actions and protests have exploded across the country. And, even with this week’s temporary “humanitarian pause” and exchange of prisoners and hostages, the powers that be have shown no interest whatsoever in listening to the thundering calls for a permanent ceasefire that are coming from governments and mass demonstrations around the world, particularly the Biden administration here in the United States, the increasingly fascistic Netanyahu government in Israel, and the arms manufacturers and war profiteers who are raking in billions from manufacturing mass death. This is prompting activists and people of conscience around the world to take direct action themselves to try to disrupt the war machine. And that includes working people in trade unions. In Australia, for instance, direct actions and protests have exploded across the country. ${article.content ?? ''}',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                )
-              ],
-            ),
+            _DetailedNewsArticleData(article: article),
+            const SliverToBoxAdapter(child: Divider()),
             const SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.all(10),
                 child: Text(
                   'Suggestion for you',
                   style: TextStyle(fontSize: 20),
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 240,
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: articleList?.length ?? 0,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: 250,
-                  ),
-                  itemBuilder: (context, index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.network(
-                          articleList?[index].urlToImage ?? '',
-                          width: 250,
-                          fit: BoxFit.fill,
-                          errorBuilder: (_, __, ___) => Image.asset('assets/substitute_image.jpeg'),
-                        ),
-                        Text(articleList?[index].source?.name ?? 'D R'),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
+            _DetailedNewsSuggestions(articleList: articleList),
           ],
         ),
       ),
     );
   }
+}
 
-  void onHandlePopupMenu(String value) {
-    switch (value) {
-      case 'Save':
-        break;
-      case 'Share':
-        break;
-      case 'Report':
-        break;
-    }
+class _AppBarPoppupMenu extends StatelessWidget {
+  final Article article;
+  final SavedArticleViewModel viewModel;
+
+  const _AppBarPoppupMenu({required this.article, required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<String>(
+            onTap: () {
+              article.sourceName = article.source?.name;
+              article.stringPublishedAt = article.publishedAt.toString();
+
+              article.id != null
+                  ? viewModel.deleteSavedArticle(article.id)
+                  : viewModel.savingArticle(article);
+            },
+            child: Row(
+              children: [
+                const Icon(Icons.save_alt_outlined),
+                article.id == null ? const Text('Save') : const Text('Delete'),
+              ],
+            ),
+          ),
+          const PopupMenuItem<String>(
+            child: Row(
+              children: [
+                Icon(Icons.share),
+                Text('Share'),
+              ],
+            ),
+          ),
+          const PopupMenuItem<String>(
+            child: Row(
+              children: [
+                Icon(Icons.report_gmailerrorred),
+                Text('Report'),
+              ],
+            ),
+          )
+        ];
+      },
+    );
+  }
+}
+
+class _DetailedNewsArticleData extends StatelessWidget {
+  final Article article;
+
+  const _DetailedNewsArticleData({required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList.list(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            article.title ?? '',
+            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 27),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            article.author != null ? 'By ${article.author}' : '',
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+          ),
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            article.publishedAt.toString(),
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            article.description ?? '',
+            style: const TextStyle(fontSize: 20),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Image.network(
+            article.urlToImage ?? '',
+            width: double.infinity,
+            fit: BoxFit.fill,
+            errorBuilder: (_, __, ___) => const Text(''),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            'And, even with this week’s temporary “humanitarian pause” and exchange of prisoners and hostages, the powers that be have shown no interest whatsoever in listening to the thundering calls for a permanent ceasefire that are coming from governments and mass demonstrations around the world, particularly the Biden administration here in the United States, the increasingly fascistic Netanyahu government in Israel, and the arms manufacturers and war profiteers who are raking in billions from manufacturing mass death. This is prompting activists and people of conscience around the world to take direct action themselves to try to disrupt the war machine. And that includes working people in trade unions. In Australia, for instance, direct actions and protests have exploded across the country. And, even with this week’s temporary “humanitarian pause” and exchange of prisoners and hostages, the powers that be have shown no interest whatsoever in listening to the thundering calls for a permanent ceasefire that are coming from governments and mass demonstrations around the world, particularly the Biden administration here in the United States, the increasingly fascistic Netanyahu government in Israel, and the arms manufacturers and war profiteers who are raking in billions from manufacturing mass death. This is prompting activists and people of conscience around the world to take direct action themselves to try to disrupt the war machine. And that includes working people in trade unions. In Australia, for instance, direct actions and protests have exploded across the country. ${article.content ?? ''}',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _DetailedNewsSuggestions extends StatelessWidget {
+  final List<Article>? articleList;
+
+  const _DetailedNewsSuggestions({required this.articleList});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: SizedBox(
+          height: 240,
+          child: GridView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: articleList?.length ?? 0,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              mainAxisSpacing: 10,
+              mainAxisExtent: 250,
+            ),
+            itemBuilder: (context, index) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    articleList?[index].urlToImage ?? '',
+                    width: 250,
+                    fit: BoxFit.fill,
+                    errorBuilder: (_, __, ___) =>
+                        Image.asset('assets/substitute_image.jpeg'),
+                  ),
+                  Text(articleList?[index].source?.name ?? 'D R'),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }

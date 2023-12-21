@@ -1,6 +1,8 @@
-import 'package:dr_news/data/providers/fetching_news.dart';
+import 'package:dr_news/data/model/database_service_view_model.dart';
+import 'package:dr_news/data/providers/article_service.dart';
 import 'package:dr_news/ui/screen/detailed_news/detailed_news_article.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NewsArticleComponent extends StatelessWidget {
   final Article article;
@@ -9,6 +11,8 @@ class NewsArticleComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
+
     ColorScheme color = Theme.of(context).colorScheme;
 
     return ConstrainedBox(
@@ -63,7 +67,7 @@ class NewsArticleComponent extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          article.source?.name ?? '',
+                          article.source?.name ?? article.sourceName ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 18,
@@ -73,16 +77,22 @@ class NewsArticleComponent extends StatelessWidget {
                         ),
                       ),
                       PopupMenuButton(
-                        icon: Icon(Icons.more_vert),
-                        onSelected: onHandlePopupMenu,
+                        icon: const Icon(Icons.more_vert),
                         itemBuilder: (context) {
                           return [
-                            const PopupMenuItem<String>(
-                              value: 'Save',
+                            PopupMenuItem<String>(
+                              onTap: () {
+                                article.sourceName = article.source?.name;
+                                article.stringPublishedAt = article.publishedAt.toString();
+
+                                article.id != null
+                                    ? viewModel.deleteSavedArticle(article.id)
+                                    : viewModel.savingArticle(article);
+                              },
                               child: Row(
                                 children: [
                                   Icon(Icons.save_alt_outlined),
-                                  Text('Save'),
+                                  article.id == null ? Text('Save') : Text('Delete'),
                                 ],
                               ),
                             ),
@@ -124,15 +134,5 @@ class NewsArticleComponent extends StatelessWidget {
         ),
       ),
     );
-  }
-  void onHandlePopupMenu(String value) {
-    switch (value) {
-      case 'Save':
-        break;
-      case 'Share':
-        break;
-      case 'Report':
-        break;
-    }
   }
 }

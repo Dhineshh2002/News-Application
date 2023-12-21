@@ -1,7 +1,8 @@
+import 'package:dr_news/data/model/database_service_view_model.dart';
 import 'package:dr_news/ui/screen/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'data/model/fetching_news_viewmodel.dart';
+import 'data/model/article_service_view_model.dart';
 
 void main() {
   runApp(const DRNews());
@@ -12,8 +13,11 @@ class DRNews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => FetchNewsViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ArticleServiceViewModel()),
+        ChangeNotifierProvider(create: (context) => SavedArticleViewModel()),
+      ],
       child: MaterialApp(
         title: 'DR News',
         theme: ThemeData(

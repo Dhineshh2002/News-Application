@@ -2,6 +2,8 @@ import 'package:dr_news/ui/screen/home/news_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../action/form_validation.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -11,8 +13,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final String _password = 'Dinesh1@';
   final String _mail = 'dhineshramadoss10@gmail.com';
+
+  final Validation validation = Validation();
 
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -23,7 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     IconData icon =
         visibilityOfPassword ? Icons.visibility : Icons.visibility_off;
+
     ColorScheme color = Theme.of(context).colorScheme;
+
     MediaQueryData size = MediaQuery.of(context);
 
     return Scaffold(
@@ -62,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Enter your email',
                     ),
                     validator: (email) {
-                      return validateEmail(email);
+                      return Validation().validateEmail(email);
                     },
                   ),
                   const SizedBox(height: 20),
@@ -90,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       filled: true,
                     ),
                     validator: (password) {
-                      return validatePassword(password);
+                      return Validation().validatePassword(password);
                     },
                   ),
                   const SizedBox(height: 10),
@@ -161,37 +168,15 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  String? validateEmail(String? email) {
-    if (email == null || email.isEmpty) {
-      return "Email can't be empty";
-    } else if (!(RegExp(
-            r"""^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+""")
-        .hasMatch(email))) {
-      return 'Invalid email';
-    }
-    return null;
-  }
-
-  String? validatePassword(String? password) {
-    if (password == null || password.isEmpty) {
-      return "Password can't be empty";
-    } else if (password.length < 8) {
-      return 'Password must contain 8 characters';
-    } else if (!(password.contains(RegExp(r'[A-Z]')))) {
-      return 'Password must contain least 1 capital letter';
-    } else if (!(password.contains(RegExp(r'[a-z]')))) {
-      return 'Password must contain least 1 small letter';
-    } else if (!(password.contains(RegExp(r'[0-9]')))) {
-      return 'Password must contain least 1 numeric';
-    } else if (!(password.contains(RegExp(r'''[!@#$%^&*()',.?":{}|<>]''')))) {
-      return 'Password must contain least 1 special character';
-    }
-    return null;
-  }
-
   void pushNewsScreen() {
     if (_formKey.currentState!.validate()) {
       if (password.text == _password && email.text == _mail) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const NewsScreen(),
+          ),
+        );
       } else {
         showDialog<String>(
           barrierLabel: 'What is this',

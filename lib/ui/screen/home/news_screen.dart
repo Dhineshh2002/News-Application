@@ -3,7 +3,7 @@ import 'package:dr_news/ui/screen/home/profile/user_profile.dart';
 import 'package:dr_news/ui/screen/home/saved/saved_article.dart';
 import 'package:flutter/material.dart';
 
-import 'articles/news_article.dart';
+import 'articles/articles_screen.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -15,7 +15,7 @@ class NewsScreen extends StatefulWidget {
 class _NewsScreenState extends State<NewsScreen> {
   int _selectedIndex = 0;
   final List<Widget> _bodyScreen = [
-    const NewsArticles(),
+    const ArticlesScreen(),
     const FavoriteTopics(),
     const SavedArticle(),
     const UserProfile(),
@@ -157,16 +157,6 @@ class _NewsScreenState extends State<NewsScreen> {
         backgroundColor: Colors.blue[50],
         unselectedFontSize: 14.0,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Text(
-          '+',
-          style: TextStyle(
-            fontSize: 40,
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
