@@ -2,7 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ArticleService {
-  Future<NewsArticle> fetchNewsArticle() async {
+  Future<NewsArticle> fetchNewsArticle({String? country, String? category}) async {
+    category = category != null? 'category=$category&' : '';
     try {
       final response = await http.get(
         Uri.parse(

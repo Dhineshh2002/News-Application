@@ -3,6 +3,7 @@ import 'package:dr_news/ui/screen/home/profile/user_profile.dart';
 import 'package:dr_news/ui/screen/home/saved/saved_article.dart';
 import 'package:flutter/material.dart';
 
+import '../search/search_screen.dart';
 import 'articles/articles_screen.dart';
 
 class NewsScreen extends StatefulWidget {
@@ -14,14 +15,8 @@ class NewsScreen extends StatefulWidget {
 
 class _NewsScreenState extends State<NewsScreen> {
   int _selectedIndex = 0;
-  final List<Widget> _bodyScreen = [
-    const ArticlesScreen(),
-    const FavoriteTopics(),
-    const SavedArticle(),
-    const UserProfile(),
-  ];
 
-  final List<String> titleText = [
+  final List<String> appBarTitles = [
     'DR News',
     'Favorites',
     'Saved News',
@@ -32,16 +27,19 @@ class _NewsScreenState extends State<NewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 60,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showSearch(context: context, delegate: SearchScreen());
+            },
             icon: const Icon(
               Icons.search_sharp,
             ),
           ),
         ],
         title: Text(
-          titleText.elementAt(_selectedIndex),
+          appBarTitles.elementAt(_selectedIndex),
           style: TextStyle(
             color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.w900,
@@ -67,11 +65,11 @@ class _NewsScreenState extends State<NewsScreen> {
       drawer: Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
@@ -82,10 +80,20 @@ class _NewsScreenState extends State<NewsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Dhinesh'),
-                      Text(
-                        'Update profile >',
-                        style: TextStyle(color: Colors.blue),
+                      const Text('Dhinesh'),
+                      InkWell(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          await Future.delayed(
+                              const Duration(milliseconds: 100));
+                          setState(() {
+                            _selectedIndex = 3;
+                          });
+                        },
+                        child: const Text(
+                          'View profile >',
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ],
                   )
@@ -119,10 +127,13 @@ class _NewsScreenState extends State<NewsScreen> {
           ],
         ),
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _bodyScreen,
-      ),
+      body: const [
+        ArticlesScreen(),
+        FavoriteTopics(),
+        SavedArticle(),
+        UserProfile(),
+      ].elementAt(_selectedIndex),
+
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

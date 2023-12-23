@@ -18,22 +18,25 @@ class UserProfile extends StatelessWidget {
                 pinned: true,
                 expandedHeight: 250,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: AssetImage('assets/images/sports.png'),
-                            radius: 50,
-                          ),
-                          const Text('Dhinesh', style: TextStyle(fontSize: 40),),
-                          OutlinedButton(onPressed: (){}, child: const Text('Edit Profile'))
-                        ],
-                      )
-                    ],
+                  background: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              backgroundImage: AssetImage('assets/images/sports.png'),
+                              radius: 50,
+                            ),
+                            const Text('Dhinesh', style: TextStyle(fontSize: 40),),
+                            OutlinedButton(onPressed: (){}, child: const Text('Edit Profile'))
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 bottom: const TabBar(

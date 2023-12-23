@@ -1,8 +1,11 @@
+
 import 'package:dr_news/data/model/article_service_view_model.dart';
 import 'package:dr_news/data/model/database_service_view_model.dart';
 import 'package:dr_news/data/providers/article_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/share_article.dart';
 
 class DetailedNews extends StatelessWidget {
   final Article article;
@@ -13,23 +16,23 @@ class DetailedNews extends StatelessWidget {
   Widget build(BuildContext context) {
     ColorScheme color = Theme.of(context).colorScheme;
 
-    ArticleServiceViewModel vm = context.read<ArticleServiceViewModel>();
-    SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
-    List<Article>? articleList = vm.newsArticle?.articles;
+    ArticleServiceViewModel articleViewModel =
+        context.read<ArticleServiceViewModel>();
+
+    List<Article>? articleList = articleViewModel.newsArticle?.articles;
 
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           controller: ScrollController(
             initialScrollOffset: 0,
-            keepScrollOffset: false,
+            keepScrollOffset: true,
           ),
           slivers: [
             SliverAppBar(
               actions: [
                 _AppBarPoppupMenu(
                   article: article,
-                  viewModel: viewModel,
                 ),
               ],
               foregroundColor: color.primary,
@@ -63,7 +66,7 @@ class DetailedNews extends StatelessWidget {
                   width: double.infinity,
                   fit: BoxFit.fill,
                   errorBuilder: (_, __, ___) => Image.asset(
-                    'assets/substitute_image.jpeg',
+                    'assets/images/substitute_image.jpeg',
                     width: double.infinity,
                     fit: BoxFit.fill,
                   ),
@@ -91,9 +94,8 @@ class DetailedNews extends StatelessWidget {
 
 class _AppBarPoppupMenu extends StatelessWidget {
   final Article article;
-  final SavedArticleViewModel viewModel;
 
-  const _AppBarPoppupMenu({required this.article, required this.viewModel});
+  const _AppBarPoppupMenu({required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +104,8 @@ class _AppBarPoppupMenu extends StatelessWidget {
         return [
           PopupMenuItem<String>(
             onTap: () {
+              SavedArticleViewModel viewModel =
+                  context.read<SavedArticleViewModel>();
               article.sourceName = article.source?.name;
               article.stringPublishedAt = article.publishedAt.toString();
 
@@ -116,8 +120,9 @@ class _AppBarPoppupMenu extends StatelessWidget {
               ],
             ),
           ),
-          const PopupMenuItem<String>(
-            child: Row(
+          PopupMenuItem<String>(
+            onTap: () => ShareArticle().bottomSheet(context),
+            child: const Row(
               children: [
                 Icon(Icons.share),
                 Text('Share'),
@@ -219,7 +224,7 @@ class _DetailedNewsSuggestions extends StatelessWidget {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
               mainAxisSpacing: 10,
-              mainAxisExtent: 250,
+              crossAxisSpacing: 10,
             ),
             itemBuilder: (context, index) {
               return Column(
@@ -227,12 +232,17 @@ class _DetailedNewsSuggestions extends StatelessWidget {
                 children: [
                   Image.network(
                     articleList?[index].urlToImage ?? '',
-                    width: 250,
+                    width: 240,
+                    height: 120,
                     fit: BoxFit.fill,
-                    errorBuilder: (_, __, ___) =>
-                        Image.asset('assets/substitute_image.jpeg'),
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      'assets/images/substitute_image.jpeg',
+                      width: 240,
+                      height: 120,
+                      fit: BoxFit.fill,
+                    ),
                   ),
-                  Text(articleList?[index].source?.name ?? 'D R'),
+                  Text(articleList?[index].source?.name ?? 'DR News'),
                 ],
               );
             },

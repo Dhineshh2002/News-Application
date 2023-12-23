@@ -1,8 +1,9 @@
-import 'package:dr_news/ui/screen/home/news_screen.dart';
+import 'package:dr_news/ui/screen/home/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../action/form_validation.dart';
+import '../../../common/form_validation.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -97,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       filled: true,
                     ),
                     validator: (password) {
-                      return Validation().validatePassword(password);
+                      return validation.validatePassword(password);
                     },
                   ),
                   const SizedBox(height: 10),

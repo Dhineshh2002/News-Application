@@ -4,6 +4,8 @@ import 'package:dr_news/ui/screen/detailed_news/detailed_news_article.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../common/share_article.dart';
+
 class NewsArticleComponent extends StatelessWidget {
   final Article article;
 
@@ -11,8 +13,6 @@ class NewsArticleComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
-
     ColorScheme color = Theme.of(context).colorScheme;
 
     return ConstrainedBox(
@@ -82,6 +82,8 @@ class NewsArticleComponent extends StatelessWidget {
                           return [
                             PopupMenuItem<String>(
                               onTap: () {
+                                SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
+
                                 article.sourceName = article.source?.name;
                                 article.stringPublishedAt = article.publishedAt.toString();
 
@@ -91,14 +93,16 @@ class NewsArticleComponent extends StatelessWidget {
                               },
                               child: Row(
                                 children: [
-                                  Icon(Icons.save_alt_outlined),
+                                  const Icon(Icons.save_alt_outlined),
                                   article.id == null ? Text('Save') : Text('Delete'),
                                 ],
                               ),
                             ),
-                            const PopupMenuItem<String>(
-                              value: 'Share',
-                              child: Row(
+                            PopupMenuItem<String>(
+                              onTap: () {
+                                ShareArticle().bottomSheet(context);
+                              },
+                              child: const Row(
                                 children: [
                                   Icon(Icons.share),
                                   Text('Share'),
@@ -106,7 +110,6 @@ class NewsArticleComponent extends StatelessWidget {
                               ),
                             ),
                             const PopupMenuItem<String>(
-                              value: 'Report',
                               child: Row(
                                 children: [
                                   Icon(Icons.report_gmailerrorred),
