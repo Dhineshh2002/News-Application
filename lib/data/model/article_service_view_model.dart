@@ -9,10 +9,13 @@ class ArticleServiceViewModel extends ChangeNotifier {
   ///
   /// Getting articles from [ArticleService]
   ///
-  Future getNewsArticles({String? category}) async {
+  Future getNewsArticles({String? category, String? country}) async {
     isFetching = false;
 
-    newsArticle = await articleService.fetchNewsArticle(category: category);
+    newsArticle = await articleService.fetchNewsArticle(
+      category: category,
+      country: country,
+    );
 
     isFetching = true;
 
