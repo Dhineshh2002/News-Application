@@ -4,14 +4,14 @@ import 'dart:convert';
 class ArticleService {
   Future<NewsArticle> fetchNewsArticle({String? country, String? category}) async {
 
-    // If category or country are null the value will be empty
+    // If category are null the value will be empty.
     category = category != null ? 'category=$category&' : '';
-    country = country != null ? 'country=$country&' : '';
+    country = country ?? 'in';
 
     // Getting response from NEWS API server
     final response = await http.get(
       Uri.parse(
-          'https://newsapi.org/v2/top-headlines?country=in&${category}apiKey=7adc90241b6047e7a30c8276a66549ca'),
+          'https://newsapi.org/v2/top-headlines?country=$country&${category}apiKey=7adc90241b6047e7a30c8276a66549ca'),
     );
 
     // Returning response after converting into NewsArticle object
