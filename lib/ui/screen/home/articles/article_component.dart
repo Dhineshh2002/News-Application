@@ -147,7 +147,7 @@ class NewsArticleComponent extends StatelessWidget {
       ),
       PopupMenuItem<String>(
         onTap: () {
-          ShareArticle().bottomSheet(context);
+          ShareArticle().bottomSheet(context, article.title);
         },
         child: const Row(
           children: [
