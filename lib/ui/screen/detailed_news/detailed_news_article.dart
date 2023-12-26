@@ -152,7 +152,10 @@ class _ArticleContents extends StatelessWidget {
             article.urlToImage ?? '',
             width: double.infinity,
             fit: BoxFit.fill,
-            errorBuilder: (_, __, ___) => const Text(''),
+            errorBuilder: (_, __, ___) => Image.asset(
+              'assets/images/substitute_image.jpeg',
+              width: double.infinity,
+            ),
           ),
         ),
         Padding(
@@ -296,7 +299,7 @@ List<PopupMenuItem<String>> popupMenuItems(
     ),
     PopupMenuItem<String>(
       onTap: () {
-        ShareArticle().bottomSheet(context);
+        ShareArticle().bottomSheet(context, article.title);
       },
       child: const Row(
         children: [
