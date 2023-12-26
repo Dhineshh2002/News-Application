@@ -138,24 +138,3 @@ class Favorite {
     this.isFavorite = false,
   });
 }
-
-class Person {
-
-  String? name;
-
-  Person._();
-
-  Person._privateNamed();
-
-  Person.named();
-
-  factory Person() => Person.named();
-
-  void _privateFunction(){
-
-  }
-}
-
-void hello() {
-  String x = "d";
-}
