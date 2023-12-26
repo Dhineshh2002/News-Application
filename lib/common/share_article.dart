@@ -2,25 +2,35 @@ import 'package:flutter/material.dart';
 
 class ShareArticle {
 
-  Future<void> bottomSheet(context) {
+  Future<void> bottomSheet(context, String? articleTitle) {
     return showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
-          height: 300,
+          height: 370,
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
+                  Text(
+                    articleTitle ?? '',
+                    softWrap: true,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 30.0),
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: SizedBox(
                       height: 180,
                       child: GridView(
                         scrollDirection: Axis.horizontal,
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           mainAxisExtent: 90,
                           mainAxisSpacing: 3,
@@ -28,77 +38,98 @@ class ShareArticle {
                         children: [
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/chrome.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/chrome.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('Chrome'),
                             ],
                           ),
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/whatsApp.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/whatsApp.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('WhatsApp'),
                             ],
                           ),
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/twitter.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/twitter.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('X'),
                             ],
                           ),
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/facebook.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/facebook.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('Meta')
                             ],
                           ),
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/gmail.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/gmail.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('Gmail'),
                             ],
                           ),
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/linkedIn.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/linkedIn.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('LinkedIn'),
                             ],
                           ),
                           Column(
                             children: [
-                              Image.asset(
-                                'assets/images/app_logos/instagram.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fill,
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/images/app_logos/instagram.png',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                onTap: (){},
                               ),
                               const Text('Instagram'),
                             ],
@@ -112,7 +143,7 @@ class ShareArticle {
                                   height: 50,
                                   fit: BoxFit.fill,
                                 ),
-                                onTap: (){},
+                                onTap: () {},
                               ),
                               const Text('Telegram'),
                             ],
