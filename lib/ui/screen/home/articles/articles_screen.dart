@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'article_component.dart';
 
 class ArticlesScreen extends StatelessWidget {
+
   const ArticlesScreen({super.key});
 
   @override
