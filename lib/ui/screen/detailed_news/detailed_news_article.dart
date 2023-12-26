@@ -1,4 +1,3 @@
-
 import 'package:dr_news/data/model/article_service_view_model.dart';
 import 'package:dr_news/data/model/database_service_view_model.dart';
 import 'package:dr_news/data/providers/article_service.dart';
@@ -14,13 +13,6 @@ class DetailedNews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ColorScheme color = Theme.of(context).colorScheme;
-
-    ArticleServiceViewModel articleViewModel =
-        context.read<ArticleServiceViewModel>();
-
-    List<Article>? articleList = articleViewModel.newsArticle?.articles;
-
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -29,62 +21,21 @@ class DetailedNews extends StatelessWidget {
             keepScrollOffset: true,
           ),
           slivers: [
-            SliverAppBar(
-              actions: [
-                _AppBarPoppupMenu(
-                  article: article,
-                ),
-              ],
-              foregroundColor: color.primary,
-              backgroundColor: Colors.blue[50],
-              pinned: true,
-              expandedHeight: 350,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Stack(
-                  children: <Widget>[
-                    Text(
-                      article.source?.name ?? article.sourceName ?? 'DR NEWS',
-                      style: TextStyle(
-                        fontSize: 20,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 6
-                          ..color = Colors.black45,
-                      ),
-                    ),
-                    Text(
-                      article.source?.name ?? article.sourceName ?? 'DR News',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                background: Image.network(
-                  article.urlToImage ?? '',
-                  width: double.infinity,
-                  fit: BoxFit.fill,
-                  errorBuilder: (_, __, ___) => Image.asset(
-                    'assets/images/substitute_image.jpeg',
-                    width: double.infinity,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-              ),
-            ),
-            _DetailedNewsArticleData(article: article),
+            _AppBar(article: article),
+
+            _ArticleContents(article: article),
+
             const SliverToBoxAdapter(child: Divider()),
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Text(
-                  'Suggestion for you',
-                  style: TextStyle(fontSize: 20),
+                  'Suggestion for you:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
               ),
             ),
-            _DetailedNewsSuggestions(articleList: articleList),
+            _Sugessions(),
           ],
         ),
       ),
@@ -92,61 +43,71 @@ class DetailedNews extends StatelessWidget {
   }
 }
 
-class _AppBarPoppupMenu extends StatelessWidget {
+class _AppBar extends StatelessWidget {
   final Article article;
 
-  const _AppBarPoppupMenu({required this.article});
+  const _AppBar({required this.article});
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
-      itemBuilder: (context) {
-        return [
-          PopupMenuItem<String>(
-            onTap: () {
-              SavedArticleViewModel viewModel =
-                  context.read<SavedArticleViewModel>();
-              article.sourceName = article.source?.name;
-              article.stringPublishedAt = article.publishedAt.toString();
-
-              article.id != null
-                  ? viewModel.deleteSavedArticle(article.id)
-                  : viewModel.savingArticle(article);
-            },
-            child: Row(
-              children: [
-                const Icon(Icons.save_alt_outlined),
-                article.id == null ? const Text('Save') : const Text('Delete'),
-              ],
+    return SliverAppBar(
+      actions: [
+        PopupMenuButton(
+          icon: const Icon(Icons.more_vert),
+          shadowColor: Colors.black,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
             ),
           ),
-          PopupMenuItem<String>(
-            onTap: () => ShareArticle().bottomSheet(context),
-            child: const Row(
-              children: [
-                Icon(Icons.share),
-                Text('Share'),
-              ],
+          itemBuilder: (context) => popupMenuItems(context, article),
+        ),
+      ],
+      foregroundColor: Theme.of(context).colorScheme.primary,
+      pinned: true,
+      expandedHeight: 350,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Stack(
+          children: <Widget>[
+            Text(
+              article.source?.name ?? article.sourceName ?? 'DR NEWS',
+              style: TextStyle(
+                fontSize: 20,
+                foreground: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeJoin = StrokeJoin.round
+                  ..strokeWidth = 6
+                  ..color = Colors.blue[50]!,
+              ),
             ),
+            Text(
+              article.source?.name ?? article.sourceName ?? 'DR News',
+              style: TextStyle(
+                fontSize: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
+        background: Image.network(
+          article.urlToImage ?? '',
+          width: double.infinity,
+          fit: BoxFit.fill,
+          errorBuilder: (_, __, ___) => Image.asset(
+            'assets/images/substitute_image.jpeg',
+            width: double.infinity,
+            fit: BoxFit.fill,
           ),
-          const PopupMenuItem<String>(
-            child: Row(
-              children: [
-                Icon(Icons.report_gmailerrorred),
-                Text('Report'),
-              ],
-            ),
-          )
-        ];
-      },
+        ),
+      ),
     );
   }
 }
 
-class _DetailedNewsArticleData extends StatelessWidget {
+class _ArticleContents extends StatelessWidget {
   final Article article;
 
-  const _DetailedNewsArticleData({required this.article});
+  const _ArticleContents({required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -206,18 +167,19 @@ class _DetailedNewsArticleData extends StatelessWidget {
   }
 }
 
-class _DetailedNewsSuggestions extends StatelessWidget {
-  final List<Article>? articleList;
-
-  const _DetailedNewsSuggestions({required this.articleList});
-
+class _Sugessions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ArticleServiceViewModel articleViewModel =
+        context.read<ArticleServiceViewModel>();
+
+    List<Article>? articleList = articleViewModel.newsArticle?.articles;
+
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: SizedBox(
-          height: 240,
+          height: 250,
           child: GridView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: articleList?.length ?? 0,
@@ -227,23 +189,65 @@ class _DetailedNewsSuggestions extends StatelessWidget {
               crossAxisSpacing: 10,
             ),
             itemBuilder: (context, index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.network(
-                    articleList?[index].urlToImage ?? '',
-                    width: 240,
-                    height: 120,
-                    fit: BoxFit.fill,
-                    errorBuilder: (_, __, ___) => Image.asset(
-                      'assets/images/substitute_image.jpeg',
+              return Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.blue[50],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.network(
+                      articleList?[index].urlToImage ?? '',
                       width: 240,
                       height: 120,
                       fit: BoxFit.fill,
+                      errorBuilder: (_, __, ___) => Image.asset(
+                        'assets/images/substitute_image.jpeg',
+                        width: 240,
+                        height: 120,
+                        fit: BoxFit.fill,
+                      ),
                     ),
-                  ),
-                  Text(articleList?[index].source?.name ?? 'DR News'),
-                ],
+                    Text(
+                      articleList?[index].title ?? '',
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            articleList?[index].source?.name ??
+                                articleList?[index].sourceName ??
+                                '',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 18,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            softWrap: true,
+                          ),
+                        ),
+                        PopupMenuButton(
+                          icon: const Icon(Icons.more_vert),
+                          shadowColor: Colors.black,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          itemBuilder: (context) {
+                            return popupMenuItems(context, articleList![index]);
+                          },
+                        )
+                      ],
+                    )
+                  ],
+                ),
               );
             },
           ),
@@ -251,4 +255,63 @@ class _DetailedNewsSuggestions extends StatelessWidget {
       ),
     );
   }
+}
+
+///
+///Popup menu items
+///
+List<PopupMenuItem<String>> popupMenuItems(
+    BuildContext context, Article article) {
+  IconData icon =
+      article.id == null ? Icons.save_alt_outlined : Icons.delete_outline;
+
+  String text = article.id == null ? 'Save' : 'Remove';
+
+  String snackBarText = article.id == null ? 'Saved' : 'Removed';
+
+  return [
+    PopupMenuItem<String>(
+      onTap: () {
+        SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
+
+        article.sourceName = article.source?.name;
+        article.stringPublishedAt = article.publishedAt.toString();
+
+        article.id != null
+            ? viewModel.deleteSavedArticle(article.id)
+            : viewModel.savingArticle(article);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackBarText),
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Icon(icon),
+          Text(text),
+        ],
+      ),
+    ),
+    PopupMenuItem<String>(
+      onTap: () {
+        ShareArticle().bottomSheet(context);
+      },
+      child: const Row(
+        children: [
+          Icon(Icons.share),
+          Text('Share'),
+        ],
+      ),
+    ),
+    const PopupMenuItem<String>(
+      child: Row(
+        children: [
+          Icon(Icons.report_gmailerrorred),
+          Text('Report'),
+        ],
+      ),
+    )
+  ];
 }
