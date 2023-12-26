@@ -9,29 +9,30 @@ class ArticlesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ArticleServiceViewModel viewModel = context.read<ArticleServiceViewModel>();
-
-    viewModel.getNewsArticles();
+    ArticleServiceViewModel viewModel =
+        context.watch<ArticleServiceViewModel>();
 
     List<Article>? article = viewModel.newsArticle?.articles;
 
-    return Center(
-      child: ListView.builder(
-        itemCount: article?.length ?? 0,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Consumer<ArticleServiceViewModel>(
-            builder: (context, viewModel, child){
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: NewsArticleComponent(
-                  article: article![index],
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
+    return viewModel.isFetching
+        ? Center(
+            child: ListView.builder(
+              itemCount: article?.length ?? 0,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Consumer<ArticleServiceViewModel>(
+                  builder: (context, ArticleServiceViewModel viewModel, child) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: NewsArticleComponent(
+                        article: article![index],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          )
+        : const Center(child: CircularProgressIndicator());
   }
 }
