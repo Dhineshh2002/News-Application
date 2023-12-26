@@ -1,7 +1,5 @@
-import 'package:dr_news/data/model/article_service_view_model.dart';
-import 'package:dr_news/ui/screen/home/main_screen.dart';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SearchScreen extends SearchDelegate {
   List<String> searchTopics = [
@@ -12,6 +10,7 @@ class SearchScreen extends SearchDelegate {
     'Science',
     'Sports',
     'Technology',
+    'India',
   ];
 
   @override
@@ -57,8 +56,12 @@ class SearchScreen extends SearchDelegate {
       itemCount: matchQuery.length,
       itemBuilder: (context, index) {
         String result = matchQuery[index];
+
         return ListTile(
           title: Text(result),
+          onTap: () {
+            close(context, result);
+          },
         );
       },
     );
@@ -67,22 +70,21 @@ class SearchScreen extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> matchQuery = [];
+
     for (String items in searchTopics) {
       if (items.toLowerCase().contains(query.toLowerCase())) {
         matchQuery.add(items);
       }
     }
+
     return ListView.builder(
       itemCount: matchQuery.length,
       itemBuilder: (context, index) {
         String result = matchQuery[index];
+
         return ListTile(
           onTap: () {
-            ArticleServiceViewModel vm = context.read<ArticleServiceViewModel>();
-            vm.getNewsArticles(category: result.toLowerCase());
-
-            MaterialPageRoute route = MaterialPageRoute(builder: (context) => NewsScreen());
-            Navigator.push(context, route);
+            close(context, result.toLowerCase());
           },
           title: Text(result),
         );
