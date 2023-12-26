@@ -3,21 +3,24 @@ import 'dart:convert';
 
 class ArticleService {
   Future<NewsArticle> fetchNewsArticle({String? country, String? category}) async {
-    category = category != null? 'category=$category&' : '';
-    try {
-      final response = await http.get(
-        Uri.parse(
-            'https://newsapi.org/v2/top-headlines?country=in&apiKey=7adc90241b6047e7a30c8276a66549ca'),
-      );
-      if (response.statusCode == 200) {
-        NewsArticle result = NewsArticle.fromJson(
-            jsonDecode(response.body) as Map<String, dynamic>);
-        return result;
-      } else {
-        throw Exception('Failed to load album');
-      }
-    } catch (e) {
-      rethrow;
+
+    // If category or country are null the value will be empty
+    category = category != null ? 'category=$category&' : '';
+    country = country != null ? 'country=$country&' : '';
+
+    // Getting response from NEWS API server
+    final response = await http.get(
+      Uri.parse(
+          'https://newsapi.org/v2/top-headlines?country=in&${category}apiKey=7adc90241b6047e7a30c8276a66549ca'),
+    );
+
+    // Returning response after converting into NewsArticle object
+    if (response.statusCode == 200) {
+      NewsArticle result = NewsArticle.fromJson(
+          jsonDecode(response.body) as Map<String, dynamic>);
+      return result;
+    } else {
+      throw Exception('Failed to load album');
     }
   }
 }
