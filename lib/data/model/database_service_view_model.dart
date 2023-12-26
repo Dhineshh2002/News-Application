@@ -6,6 +6,7 @@ import '../providers/article_service.dart';
 class SavedArticleViewModel extends ChangeNotifier{
   final DatabaseService db = DatabaseService();
   List<Article>? article;
+  bool isFetching = false;
 
   void savingArticle(Article article) async {
     await db.insertRecord(article);
@@ -13,7 +14,12 @@ class SavedArticleViewModel extends ChangeNotifier{
   }
 
   void refreshingArticles() async{
+    isFetching = false;
+
     article = await db.retrieveRecords();
+
+    isFetching = true;
+
     notifyListeners();
   }
 
