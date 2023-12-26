@@ -46,11 +46,16 @@ class _NewsScreenState extends State<NewsScreen> {
                   onPressed: () async {
                     String result = await showSearch(
                       context: context,
-                      delegate: SearchScreen(),
+                      delegate: ArticleSearch(),
                     );
-                    context
-                        .read<ArticleServiceViewModel>()
-                        .getNewsArticles(category: result);
+
+                    result.length == 2
+                        ? context
+                            .read<ArticleServiceViewModel>()
+                            .getNewsArticles(country: result)
+                        : context
+                            .read<ArticleServiceViewModel>()
+                            .getNewsArticles(category: result);
                   },
                   icon: const Icon(
                     Icons.search_sharp,
