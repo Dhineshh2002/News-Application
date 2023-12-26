@@ -1,4 +1,4 @@
-import 'package:dr_news/ui/screen/home/main_screen.dart';
+import 'package:dr_news/ui/screen/home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
