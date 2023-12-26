@@ -2,11 +2,20 @@ import 'package:dr_news/data/providers/article_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class ArticleServiceViewModel extends ChangeNotifier {
-  final ArticleService articleService = ArticleService();
+  ArticleService articleService = ArticleService();
   NewsArticle? newsArticle;
+  bool isFetching = false;
 
-  void getNewsArticles({String? category}) async {
+  ///
+  /// Getting articles from [ArticleService]
+  ///
+  Future getNewsArticles({String? category}) async {
+    isFetching = false;
+
     newsArticle = await articleService.fetchNewsArticle(category: category);
+
+    isFetching = true;
+
     notifyListeners();
   }
 }
