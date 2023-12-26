@@ -78,46 +78,14 @@ class NewsArticleComponent extends StatelessWidget {
                       ),
                       PopupMenuButton(
                         icon: const Icon(Icons.more_vert),
+                        shadowColor: Colors.black,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
                         itemBuilder: (context) {
-                          return [
-                            PopupMenuItem<String>(
-                              onTap: () {
-                                SavedArticleViewModel viewModel = context.read<SavedArticleViewModel>();
-
-                                article.sourceName = article.source?.name;
-                                article.stringPublishedAt = article.publishedAt.toString();
-
-                                article.id != null
-                                    ? viewModel.deleteSavedArticle(article.id)
-                                    : viewModel.savingArticle(article);
-                              },
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.save_alt_outlined),
-                                  article.id == null ? Text('Save') : Text('Delete'),
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem<String>(
-                              onTap: () {
-                                ShareArticle().bottomSheet(context);
-                              },
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.share),
-                                  Text('Share'),
-                                ],
-                              ),
-                            ),
-                            const PopupMenuItem<String>(
-                              child: Row(
-                                children: [
-                                  Icon(Icons.report_gmailerrorred),
-                                  Text('Report'),
-                                ],
-                              ),
-                            )
-                          ];
+                          return popupMenuItems(context);
                         },
                       )
                     ],
@@ -137,5 +105,65 @@ class NewsArticleComponent extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  ///
+  /// list of popup menu items
+  ///
+  List<PopupMenuItem<String>> popupMenuItems(BuildContext context) {
+    IconData icon = article.id == null
+        ? Icons.save_alt_outlined
+        : Icons.delete_outline;
+
+    String text = article.id == null ? 'Save' : 'Remove';
+
+    String snackBarText = article.id == null ? 'Saved': 'Removed';
+
+    return [
+      PopupMenuItem<String>(
+        onTap: () {
+          SavedArticleViewModel viewModel =
+              context.read<SavedArticleViewModel>();
+
+          article.sourceName = article.source?.name;
+          article.stringPublishedAt = article.publishedAt.toString();
+
+          article.id != null
+              ? viewModel.deleteSavedArticle(article.id)
+              : viewModel.savingArticle(article);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(snackBarText),
+            ),
+          );
+        },
+        child: Row(
+          children: [
+            Icon(icon),
+            Text(text),
+          ],
+        ),
+      ),
+      PopupMenuItem<String>(
+        onTap: () {
+          ShareArticle().bottomSheet(context);
+        },
+        child: const Row(
+          children: [
+            Icon(Icons.share),
+            Text('Share'),
+          ],
+        ),
+      ),
+      const PopupMenuItem<String>(
+        child: Row(
+          children: [
+            Icon(Icons.report_gmailerrorred),
+            Text('Report'),
+          ],
+        ),
+      )
+    ];
   }
 }
