@@ -1,3 +1,4 @@
+
 class Validation {
 
   String? validateEmail(String? email) {
@@ -26,5 +27,15 @@ class Validation {
       return 'Password must contain least 1 special character';
     }
     return null;
+  }
+
+  String? validateConfirmPassword(String? confirmPassword, String? password){
+    if(confirmPassword == null || confirmPassword.isEmpty){
+      return 'This field can not be empty';
+    } else if (confirmPassword != password) {
+      return 'Password did not match';
+    } else {
+      return null;
+    }
   }
 }
