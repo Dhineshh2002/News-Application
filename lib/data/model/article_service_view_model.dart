@@ -1,5 +1,6 @@
-import 'package:dr_news/data/providers/article_service.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../providers/article_service.dart';
 
 class ArticleServiceViewModel extends ChangeNotifier {
   ArticleService articleService = ArticleService();
