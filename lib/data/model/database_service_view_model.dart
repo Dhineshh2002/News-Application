@@ -1,7 +1,8 @@
-import 'package:dr_news/data/providers/database_service.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../providers/article_service.dart';
+import '../providers/database_service.dart';
+
+
 
 class SavedArticleViewModel extends ChangeNotifier{
   final DatabaseService db = DatabaseService();
