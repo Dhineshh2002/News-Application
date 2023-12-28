@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatelessWidget {
-  const UserProfile({super.key});
+  final String userName;
+
+  const UserProfile({super.key, required this.userName});
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class UserProfile extends StatelessWidget {
                               backgroundImage: AssetImage('assets/images/sports.png'),
                               radius: 50,
                             ),
-                            const Text('Dhinesh', style: TextStyle(fontSize: 40),),
+                            Text(userName, style: const TextStyle(fontSize: 40)),
                             OutlinedButton(onPressed: (){}, child: const Text('Edit Profile'))
                           ],
                         )

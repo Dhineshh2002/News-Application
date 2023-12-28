@@ -1,10 +1,11 @@
 import 'package:dr_news/ui/screen/login/login_screen.dart';
-import 'package:dr_news/ui/screen/login/user_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/form_validation.dart';
+import '../../../data/model/user_detail_view_model.dart';
+import '../../../data/providers/user_detail.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

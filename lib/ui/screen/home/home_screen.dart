@@ -1,6 +1,6 @@
 import 'package:dr_news/data/model/article_service_view_model.dart';
 import 'package:dr_news/data/model/database_service_view_model.dart';
-import 'package:dr_news/ui/screen/home/favorites/favorite_topic.dart';
+import 'package:dr_news/ui/screen/home/favorites/favorite_category.dart';
 import 'package:dr_news/ui/screen/home/profile/user_profile.dart';
 import 'package:dr_news/ui/screen/home/saved/saved_article.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,8 @@ import '../search/search_screen.dart';
 import 'articles/articles_screen.dart';
 
 class NewsScreen extends StatefulWidget {
-  const NewsScreen({super.key});
+  final String userName;
+  const NewsScreen({super.key, required this.userName});
 
   @override
   State<NewsScreen> createState() => _NewsScreenState();
@@ -23,7 +24,7 @@ class _NewsScreenState extends State<NewsScreen> {
     'DR News',
     'Favorites',
     'Saved News',
-    'Profile info'
+    'Profile info',
   ];
 
   @override
@@ -48,14 +49,7 @@ class _NewsScreenState extends State<NewsScreen> {
                       context: context,
                       delegate: ArticleSearch(),
                     );
-
-                    result.length == 2
-                        ? context
-                            .read<ArticleServiceViewModel>()
-                            .getNewsArticles(country: result)
-                        : context
-                            .read<ArticleServiceViewModel>()
-                            .getNewsArticles(category: result);
+                    changingArticleCategory(result);
                   },
                   icon: const Icon(
                     Icons.search_sharp,
@@ -88,6 +82,7 @@ class _NewsScreenState extends State<NewsScreen> {
         ),
       ),
       drawer: _AppDrawer(
+        userName: widget.userName,
         onTap: () async {
           Navigator.pop(context);
           await Future.delayed(const Duration(milliseconds: 100));
@@ -98,11 +93,11 @@ class _NewsScreenState extends State<NewsScreen> {
       ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: const [
-          ArticlesScreen(),
-          FavoriteTopics(),
-          SavedArticle(),
-          UserProfile(),
+        children: [
+          const ArticlesScreen(),
+          const FavoriteTopics(),
+          const SavedArticle(),
+          UserProfile(userName: widget.userName,),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -141,12 +136,21 @@ class _NewsScreenState extends State<NewsScreen> {
       ),
     );
   }
+
+  void changingArticleCategory(String result) {
+    ArticleServiceViewModel viewModel = context.read<ArticleServiceViewModel>();
+
+    result.length == 2
+        ? viewModel.getNewsArticles(country: result)
+        : viewModel.getNewsArticles(category: result);
+  }
 }
 
 class _AppDrawer extends StatelessWidget {
+  final String userName;
   final VoidCallback onTap;
 
-  const _AppDrawer({required this.onTap});
+  const _AppDrawer({required this.onTap, required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +172,7 @@ class _AppDrawer extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Dhinesh'),
+                    Text(userName),
                     InkWell(
                       onTap: onTap,
                       child: const Text(

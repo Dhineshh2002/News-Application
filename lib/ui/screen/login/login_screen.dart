@@ -1,11 +1,12 @@
 import 'package:dr_news/ui/screen/home/home_screen.dart';
 import 'package:dr_news/ui/screen/login/sign_up_screen.dart';
-import 'package:dr_news/ui/screen/login/user_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/form_validation.dart';
+import '../../../data/model/user_detail_view_model.dart';
+import '../../../data/providers/user_detail.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,15 +20,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final Validation validation = Validation();
 
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
-  bool visibilityOfPassword = true;
+  bool _visibilityOfPassword = true;
 
   @override
   Widget build(BuildContext context) {
     IconData icon =
-        visibilityOfPassword ? Icons.visibility : Icons.visibility_off;
+        _visibilityOfPassword ? Icons.visibility : Icons.visibility_off;
 
     ColorScheme color = Theme.of(context).colorScheme;
 
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: size.size.height * 0.17),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
-                    controller: email,
+                    controller: _email,
                     decoration: InputDecoration(
                       fillColor: color.primaryContainer,
                       prefixIcon: const Icon(Icons.mail_rounded),
@@ -73,8 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    obscureText: visibilityOfPassword,
-                    controller: password,
+                    obscureText: _visibilityOfPassword,
+                    controller: _password,
                     decoration: InputDecoration(
                       fillColor: color.primaryContainer,
                       hintText: 'Enter your password',
@@ -84,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: color.primary,
                         onPressed: () {
                           setState(() {
-                            visibilityOfPassword = !visibilityOfPassword;
+                            _visibilityOfPassword = !_visibilityOfPassword;
                           });
                         },
                       ),
@@ -167,23 +168,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void pushNewsScreen(BuildContext context) {
+  void pushNewsScreen(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       UserDetailViewModel viewModel = context.read<UserDetailViewModel>();
-      viewModel.gettingUsers();
+      await viewModel.gettingUsers();
       List<UserDetail> users = viewModel.users;
 
-      for (int i = 0; i < users.length; i++) {
-        if (users[i].userEmail == email.text &&
-            users[i].password == password.text) {
+      for (UserDetail user in users) {
+        if (user.userEmail == _email.text &&
+            user.password == _password.text) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const NewsScreen(),
+              builder: (context) => NewsScreen(userName: user.userName),
             ),
           );
+          return;
         }
-        return;
       }
       wrongUserCredential();
     }

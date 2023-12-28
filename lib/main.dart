@@ -1,9 +1,9 @@
 import 'package:dr_news/data/model/database_service_view_model.dart';
 import 'package:dr_news/ui/screen/login/login_screen.dart';
-import 'package:dr_news/ui/screen/login/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'data/model/article_service_view_model.dart';
+import 'data/model/user_detail_view_model.dart';
 
 void main() {
   runApp(const DRNews());

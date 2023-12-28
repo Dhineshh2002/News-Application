@@ -35,7 +35,7 @@ class DetailedNews extends StatelessWidget {
                 ),
               ),
             ),
-            _Sugessions(),
+            _Suggestion(),
           ],
         ),
       ),
@@ -170,7 +170,7 @@ class _ArticleContents extends StatelessWidget {
   }
 }
 
-class _Sugessions extends StatelessWidget {
+class _Suggestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ArticleServiceViewModel articleViewModel =
@@ -182,7 +182,7 @@ class _Sugessions extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: SizedBox(
-          height: 250,
+          height: 260,
           child: GridView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: articleList?.length ?? 0,
@@ -199,7 +199,7 @@ class _Sugessions extends StatelessWidget {
                   color: Colors.blue[50],
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image.network(
                       articleList?[index].urlToImage ?? '',
