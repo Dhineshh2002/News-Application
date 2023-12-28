@@ -1,11 +1,11 @@
 import 'package:dr_news/ui/screen/login/login_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/form_validation.dart';
 import '../../../data/model/user_detail_view_model.dart';
 import '../../../data/providers/user_detail.dart';
+import 'alert_messages.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -232,6 +232,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void pushLoginScreen(BuildContext context) async {
+    final Alert alert = Alert();
+
     if (_formKey.currentState!.validate()) {
       if (confirmPassword.text == password.text && checkBoxValue) {
         UserDetailViewModel viewModel = context.read<UserDetailViewModel>();
@@ -264,48 +266,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             confirmPassword.text = '';
             checkBoxValue = false;
           });
-          emailAlreadyTakenAlert();
+          alert.emailAlreadyTakenAlert(context);
         }
       } else {
-        termsAndServiceAlert();
+        alert.termsAndServiceAlert(context);
       }
     }
-  }
-
-  Future<void> termsAndServiceAlert() async {
-    await showDialog<String>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text('Sign in failed'),
-          content: const Text(
-              '''Please indicate that you are accept the terms and service'''),
-          actions: [
-            CupertinoButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> emailAlreadyTakenAlert() async {
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text('Sign in failed'),
-          content: const  Text('The email you entered have been already in use'),
-          actions: [
-            CupertinoButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

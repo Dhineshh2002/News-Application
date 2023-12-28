@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../common/form_validation.dart';
 import '../../../data/model/user_detail_view_model.dart';
 import '../../../data/providers/user_detail.dart';
+import 'alert_messages.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -186,26 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return;
         }
       }
-      wrongUserCredential();
+      Alert().wrongUserCredential(context);
     }
-  }
-
-  Future<void> wrongUserCredential() async {
-    await showDialog<String>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text('Login failed'),
-          content: const Text(
-              '''Your username or password are incorrect.\nPlease try again'''),
-          actions: [
-            CupertinoButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            )
-          ],
-        );
-      },
-    );
   }
 }

@@ -24,6 +24,7 @@ class DRNews extends StatelessWidget {
         title: 'DR News',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+
           useMaterial3: true,
         ),
         home: const LoginScreen(),
