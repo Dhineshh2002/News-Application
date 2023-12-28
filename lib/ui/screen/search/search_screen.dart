@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class ArticleSearch extends SearchDelegate {
@@ -8,7 +7,7 @@ class ArticleSearch extends SearchDelegate {
     "General": "general",
     "Health": "health",
     "Science": "Sports",
-    "Technology" : "technology",
+    "Technology": "technology",
     "Sports": "sports",
     "United Arab Emirates": "ae",
     "Argentina": "ar",
@@ -104,7 +103,7 @@ class ArticleSearch extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     List<String> matchQuery = [];
 
-    if(query.isNotEmpty) {
+    if (query.isNotEmpty) {
       for (String items in searchTopics.keys) {
         if (items.toLowerCase().contains(query.toLowerCase())) {
           matchQuery.add(items);

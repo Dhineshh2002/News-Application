@@ -27,7 +27,7 @@ class Alert {
       builder: (context) {
         return CupertinoAlertDialog(
           title: const Text('Sign in failed'),
-          content: const  Text('The email you entered have been already in use'),
+          content: const  Text('The email you entered have been already in use. Try with another gmail'),
           actions: [
             CupertinoButton(
               child: const Text('OK'),

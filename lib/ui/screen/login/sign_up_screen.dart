@@ -19,21 +19,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final Validation validation = Validation();
 
-  TextEditingController userName = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController confirmPassword = TextEditingController();
+  final TextEditingController _userName = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
 
-  bool visibilityOfPassword = true;
-  bool visibilityOfConfirmPassword = true;
-  bool checkBoxValue = false;
+  bool _visibilityOfPassword = true;
+  bool _visibilityOfConfirmPassword = true;
+  bool _checkBoxValue = false;
 
   @override
   Widget build(BuildContext context) {
     IconData iconForPassword =
-        visibilityOfPassword ? Icons.visibility : Icons.visibility_off;
+        _visibilityOfPassword ? Icons.visibility : Icons.visibility_off;
     IconData iconForConfirmPassword =
-        visibilityOfConfirmPassword ? Icons.visibility : Icons.visibility_off;
+        _visibilityOfConfirmPassword ? Icons.visibility : Icons.visibility_off;
 
     ColorScheme color = Theme.of(context).colorScheme;
 
@@ -60,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   SizedBox(height: size.size.height * 0.17),
                   TextFormField(
-                    controller: userName,
+                    controller: _userName,
                     decoration: InputDecoration(
                       fillColor: color.primaryContainer,
                       prefixIcon: const Icon(Icons.account_circle),
@@ -76,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
-                    controller: email,
+                    controller: _email,
                     decoration: InputDecoration(
                       fillColor: color.primaryContainer,
                       prefixIcon: const Icon(Icons.mail_rounded),
@@ -94,8 +94,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    obscureText: visibilityOfPassword,
-                    controller: password,
+                    obscureText: _visibilityOfPassword,
+                    controller: _password,
                     decoration: InputDecoration(
                       fillColor: color.primaryContainer,
                       hintText: 'Enter your password',
@@ -105,7 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: color.primary,
                         onPressed: () {
                           setState(() {
-                            visibilityOfPassword = !visibilityOfPassword;
+                            _visibilityOfPassword = !_visibilityOfPassword;
                           });
                         },
                       ),
@@ -122,8 +122,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    controller: confirmPassword,
-                    obscureText: visibilityOfConfirmPassword,
+                    controller: _confirmPassword,
+                    obscureText: _visibilityOfConfirmPassword,
                     decoration: InputDecoration(
                       fillColor: color.primaryContainer,
                       hintText: 'Confirm password',
@@ -133,8 +133,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: color.primary,
                         onPressed: () {
                           setState(() {
-                            visibilityOfConfirmPassword =
-                                !visibilityOfConfirmPassword;
+                            _visibilityOfConfirmPassword =
+                                !_visibilityOfConfirmPassword;
                           });
                         },
                       ),
@@ -147,7 +147,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     validator: (confirmPassword) {
                       return validation.validateConfirmPassword(
-                        password.text,
+                        _password.text,
                         confirmPassword,
                       );
                     },
@@ -155,10 +155,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Row(
                     children: [
                       Checkbox(
-                        value: checkBoxValue,
+                        value: _checkBoxValue,
                         onChanged: (a) {
                           setState(() {
-                            checkBoxValue = !checkBoxValue;
+                            _checkBoxValue = !_checkBoxValue;
                           });
                         },
                       ),
@@ -166,15 +166,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         text: const TextSpan(children: [
                           TextSpan(
                             text: 'I have read and agree to the',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(color: Colors.black),
                           ),
                           TextSpan(
                             text: ' terms of service',
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                            ),
+                            style: TextStyle(color: Colors.blueAccent),
                           ),
                         ]),
                       ),
@@ -234,37 +230,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void pushLoginScreen(BuildContext context) async {
     final Alert alert = Alert();
 
-    if (_formKey.currentState!.validate()) {
-      if (confirmPassword.text == password.text && checkBoxValue) {
-        UserDetailViewModel viewModel = context.read<UserDetailViewModel>();
+    MaterialPageRoute route =
+        MaterialPageRoute(builder: (context) => const LoginScreen());
 
-        UserDetail user = UserDetail(
-          userName: userName.text,
-          userEmail: email.text,
-          password: password.text,
-        );
+    SnackBar snackBar =
+        const SnackBar(content: Text('You successfully Signed up'));
+
+    UserDetail user = UserDetail(
+      userName: _userName.text,
+      userEmail: _email.text,
+      password: _password.text,
+    );
+
+    if (_formKey.currentState!.validate()) {
+      if (_confirmPassword.text == _password.text && _checkBoxValue) {
+        UserDetailViewModel viewModel = context.read<UserDetailViewModel>();
 
         viewModel.insertingUserDetail(user);
 
         if (viewModel.flag) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginScreen(),
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('You successfully Signed up'),
-            ),
-          );
+          Navigator.push(context, route);
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         } else {
           setState(() {
-            userName.text = '';
-            email.text = '';
-            password.text = '';
-            confirmPassword.text = '';
-            checkBoxValue = false;
+            _userName.text = '';
+            _email.text = '';
+            _password.text = '';
+            _confirmPassword.text = '';
+            _checkBoxValue = false;
           });
           alert.emailAlreadyTakenAlert(context);
         }
