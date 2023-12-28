@@ -12,11 +12,11 @@ class UserDetail {
     required this.password,
   });
 
-  factory UserDetail.fromMap(Map<String, String> map) {
+  factory UserDetail.fromMap(Map<String, Object?> map) {
     return UserDetail(
-      userName: map['user_name']!,
-      userEmail: map['user_email']!,
-      password: map['password']!,
+      userName: map['user_name'] as String,
+      userEmail: map['user_email'] as String,
+      password: map['password'] as String,
     );
   }
 
@@ -70,11 +70,7 @@ class UserDetailsDatabase {
     List<UserDetail> users = List.generate(
       map.length,
           (index) {
-        return UserDetail(
-          userName: map[index]['user_name'] as String,
-          userEmail: map[index]['user_email'] as String,
-          password: map[index]['password'] as String,
-        );
+        return UserDetail.fromMap(map[index]);
       },
     );
 
