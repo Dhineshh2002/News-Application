@@ -25,10 +25,10 @@ class NewsArticleComponent extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.black,
+                color: color.onBackground,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(7)),
-              color: Colors.blue[50],
+              color: color.surfaceVariant,
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),

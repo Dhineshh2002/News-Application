@@ -3,6 +3,7 @@ import 'package:dr_news/ui/screen/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'data/model/article_service_view_model.dart';
+import 'data/model/theme_model.dart';
 import 'data/model/user_detail_view_model.dart';
 
 void main() {
@@ -19,16 +20,19 @@ class DRNews extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ArticleServiceViewModel()),
         ChangeNotifierProvider(create: (context) => SavedArticleViewModel()),
         ChangeNotifierProvider(create: (context) => UserDetailViewModel()),
+        ChangeNotifierProvider(create: (context) => ThemeModel()),
       ],
-      child: MaterialApp(
-        title: 'DR News',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-
-          useMaterial3: true,
-        ),
-        home: const LoginScreen(),
-        debugShowCheckedModeBanner: false,
+      child: Consumer<ThemeModel>(
+        builder: (BuildContext context, ThemeModel value, Widget? child) {
+          return MaterialApp(
+            title: 'DR News',
+            theme: lightThemeData,
+            darkTheme: darkThemeData,
+            themeMode: value.mode,
+            home: const LoginScreen(),
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }

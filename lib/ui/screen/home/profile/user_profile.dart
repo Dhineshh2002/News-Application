@@ -5,9 +5,11 @@ class UserProfile extends StatelessWidget {
 
   const UserProfile({super.key, required this.userName});
 
-
   @override
   Widget build(BuildContext context) {
+    ColorScheme color = Theme
+        .of(context)
+        .colorScheme;
     return DefaultTabController(
       length: 2,
       child: NestedScrollView(
@@ -31,26 +33,39 @@ class UserProfile extends StatelessWidget {
                           children: [
                             const CircleAvatar(
                               backgroundColor: Colors.transparent,
-                              backgroundImage: AssetImage('assets/images/sports.png'),
+                              backgroundImage:
+                              AssetImage('assets/images/sports.png'),
                               radius: 50,
                             ),
-                            Text(userName, style: const TextStyle(fontSize: 40)),
-                            OutlinedButton(onPressed: (){}, child: const Text('Edit Profile'))
+                            Text(
+                              userName,
+                              style: TextStyle(
+                                fontSize: 40,
+                                color: color.onBackground,
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {},
+                              child: Text(
+                                'Edit Profile',
+                                style: TextStyle(color: color.onBackground),
+                              ),
+                            )
                           ],
                         )
                       ],
                     ),
                   ),
                 ),
-                bottom: const TabBar(
+                bottom: TabBar(
                   tabs: [
                     Text(
                       'Followers',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20, color: color.onBackground),
                     ),
                     Text(
                       'Following',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20, color: color.onBackground),
                     ),
                   ],
                 ),

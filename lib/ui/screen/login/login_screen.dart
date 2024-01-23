@@ -75,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
                     obscureText: _visibilityOfPassword,
                     controller: _password,
                     decoration: InputDecoration(
@@ -125,7 +126,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         pushNewsScreen(context);
                       },
-                      child: const Text('LOGIN WITH EMAIL'),
+                      child: Text(
+                        'LOGIN WITH EMAIL',
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onInverseSurface,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -176,8 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
       List<UserDetail> users = viewModel.users;
 
       for (UserDetail user in users) {
-        if (user.userEmail == _email.text &&
-            user.password == _password.text) {
+        if (user.userEmail == _email.text && user.password == _password.text) {
           Navigator.push(
             context,
             MaterialPageRoute(

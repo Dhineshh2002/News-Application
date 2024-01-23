@@ -6,11 +6,13 @@ import 'package:dr_news/ui/screen/home/saved/saved_article.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/model/theme_model.dart';
 import '../search/search_screen.dart';
 import 'articles/articles_screen.dart';
 
 class NewsScreen extends StatefulWidget {
   final String userName;
+
   const NewsScreen({super.key, required this.userName});
 
   @override
@@ -24,7 +26,7 @@ class _NewsScreenState extends State<NewsScreen> {
     'DR News',
     'Favorites',
     'Saved News',
-    'Profile info',
+    'Profile',
   ];
 
   @override
@@ -60,7 +62,7 @@ class _NewsScreenState extends State<NewsScreen> {
         title: Text(
           appBarTitles.elementAt(_selectedIndex),
           style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onBackground,
             fontWeight: FontWeight.w900,
             fontSize: 35,
           ),
@@ -94,10 +96,18 @@ class _NewsScreenState extends State<NewsScreen> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          const ArticlesScreen(),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: ArticlesScreen(),
+          ),
           const FavoriteTopics(),
-          const SavedArticle(),
-          UserProfile(userName: widget.userName,),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: SavedArticle(),
+          ),
+          UserProfile(
+            userName: widget.userName,
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -128,10 +138,7 @@ class _NewsScreenState extends State<NewsScreen> {
             _selectedIndex = index;
           });
         },
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.black,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue[50],
         unselectedFontSize: 14.0,
       ),
     );
@@ -154,6 +161,12 @@ class _AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeModel themeModel = context.read<ThemeModel>();
+
+    Icon themeIcon = themeModel.mode == ThemeMode.dark
+        ? const Icon(Icons.sunny)
+        : const Icon(Icons.nights_stay);
+
     return Drawer(
       child: ListView(
         children: [
@@ -208,6 +221,14 @@ class _AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Log out'),
             onTap: () => Navigator.pop(context),
+          ),
+          ListTile(
+            splashColor: Theme.of(context).colorScheme.primaryContainer,
+            leading: themeIcon,
+            title: const Text("Change Theme"),
+            onTap: () {
+              context.read<ThemeModel>().toggleMode();
+            },
           )
         ],
       ),

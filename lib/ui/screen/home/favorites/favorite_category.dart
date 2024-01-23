@@ -95,8 +95,9 @@ class FavoriteTopicsComponent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Theme.of(context).colorScheme.primaryContainer),
+        borderRadius: BorderRadius.circular(20),
+        color: Theme.of(context).colorScheme.surfaceVariant,
+      ),
       child: Column(
         children: [
           Expanded(
